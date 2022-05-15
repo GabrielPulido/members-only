@@ -48,7 +48,7 @@ router.post('/register',
   });
 
 router.get('/login', function (req, res, next) {
-  res.json('congrats, you signed up');
+  res.render('login');
 });
 
 module.exports = router;
