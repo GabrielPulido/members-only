@@ -7,7 +7,7 @@ let UserSchema = new Schema(
         firstname: String,
         lastname: String,
         hash: String,
-        salt: Number,
+        salt: String,
         membershipStatus: Boolean,
         admin: Boolean,
     });
