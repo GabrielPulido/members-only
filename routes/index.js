@@ -1,14 +1,19 @@
 var express = require('express');
 const User = require('../models/User');
+const Message = require('../models/Message');
 var router = express.Router();
 const { validatePassword, generatePassword } = require('../utilities/password');
 const { body, validationResult } = require('express-validator');
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get('/', async function (req, res, next) {
+
+  const messagesArray = await Message.find({}).limit(20).exec();
+
+  res.render('index', { title: 'Members-Only', messages: messagesArray });
 });
 
+// Register
 router.get('/register', function (req, res, next) {
   res.render('register');
 });
@@ -47,8 +52,14 @@ router.post('/register',
     res.redirect('/login');
   });
 
+
+//Login
 router.get('/login', function (req, res, next) {
   res.render('login');
 });
+
+router.post('/login', passport.authenticate(), function (req, res, next) {
+
+})
 
 module.exports = router;

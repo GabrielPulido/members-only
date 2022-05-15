@@ -9,11 +9,31 @@
 </head>
 
 <body>
-  <h1>
-    <%= title %>
-  </h1>
-  <p>Welcome to <%= title %>
-  </p>
+  <nav class="navbar">
+    <h1>Members-Only</h1>
+    <div class="homepage-links">
+      <a href="/login">Login</a>
+      <a href="/register">Sign Up</a>
+    </div>
+  </nav>
+  <div class="messages-container">
+    <% for(var i=0; i<messages.length; i++) { %>
+      <div class="message">
+        <h1>
+          <%= messages[i].title %>
+        </h1>
+        <p>
+          <%= messages[i].author %>
+        </p>
+        <p>
+          <%= messages[i].timestamp %>
+        </p>
+        <p>
+          <%= messages[i].content %>
+        </p>
+      </div>
+      <% } %>
+  </div>
 </body>
 
 </html>

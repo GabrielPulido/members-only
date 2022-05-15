@@ -1,8 +1,36 @@
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
+  margin: 0px;
 }
 
 a {
   color: #00B7FF;
+}
+
+.navbar {
+  height: 60px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.navbar h1 {
+  display: inline-block;
+}
+
+.homepage-links {
+  float: right;
+  height: inherit;
+  display: flex;
+  align-items: center;
+}
+
+.homepage-links a {
+  margin-left: 30px;
+  font-size: 20px;
+}
+
+.message {
+  /* height: 100px;
+  width: 100px; */
 }
