@@ -84,4 +84,21 @@ router.get('/logout', (req, res, next) => {
   res.redirect('/');
 });
 
+router.get('/join', (req, res, next) => {
+  res.render('join');
+});
+
+router.post('/join', async (req, res, next) => {
+  if (req.body['secret-password'] === 'membersonly1') {
+    const updatedUser = new User({
+      ...req.user,
+      membershipStatus: !req.user.membershipStatus,
+      _id: req.user._id,
+    });
+    await User.findByIdAndUpdate(req.user._id, updatedUser);
+    console.log('updated user')
+  }
+  return res.redirect('/');
+});
+
 module.exports = router;
