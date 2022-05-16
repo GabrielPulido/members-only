@@ -12,6 +12,7 @@ router.get('/', async function (req, res, next) {
   let isLoggedIn;
   let messagesArray = await Message.find({}).limit(20).exec();
 
+  //Determines if there's a logged in user
   console.log(req.isAuthenticated())
   if (req.isAuthenticated()) {
     isLoggedIn = true;
@@ -21,7 +22,16 @@ router.get('/', async function (req, res, next) {
     messagesArray.forEach(element => element.author = 'unknown');
   }
 
-  res.render('index', { title: 'Members-Only', messages: messagesArray, isLoggedIn: isLoggedIn });
+  //see if user is a member
+  let membershipButtonText;
+  if (req.user.membershipStatus === true) {
+    membershipButtonText = 'Leave'
+  }
+  else {
+    membershipButtonText = 'Join'
+  }
+
+  res.render('index', { title: 'Members-Only', messages: messagesArray, isLoggedIn: isLoggedIn, membershipButtonText: membershipButtonText });
 });
 
 // Register
@@ -84,12 +94,16 @@ router.get('/logout', (req, res, next) => {
   res.redirect('/');
 });
 
+
+//Join membership
 router.get('/join', (req, res, next) => {
-  res.render('join');
+  res.render('join', { isMember: req.user.membershipStatus });
 });
 
 router.post('/join', async (req, res, next) => {
-  if (req.body['secret-password'] === 'membersonly1') {
+
+  //Note this is could be exploited bc if they found a way to make 'secret-password' undefined, they could become a member when really they should only become a member when they enter the correct password
+  if (req.body['secret-password'] === undefined || req.body['secret-password'] === 'membersonly1') {
     const updatedUser = new User({
       ...req.user,
       membershipStatus: !req.user.membershipStatus,

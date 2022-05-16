@@ -13,7 +13,9 @@
     <h1>Members-Only</h1>
     <div class="homepage-links">
       <% if(isLoggedIn) { %>
-        <a href="/join">Join</a>
+        <a href="/join">
+          <%= membershipButtonText %>
+        </a>
         <a href="/logout">Logout</a>
         <% } %>
           <% if(!isLoggedIn) { %>

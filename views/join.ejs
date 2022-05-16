@@ -9,12 +9,21 @@
 </head>
 
 <body>
-    <h1>Enter the secret password to become a member</h1>
-    <form action="" method="POST">
-        <label for="secret-password">Secret Password</label>
-        <input id="secret-password" name="secret-password" type="text" />
-        <button>Submit</button>
-    </form>
+    <% if(!isMember) { %>
+        <h1>Enter the secret password to become a member</h1>
+        <form action="" method="POST">
+            <label for="secret-password">Secret Password</label>
+            <input id="secret-password" name="secret-password" type="text" />
+            <button>Submit</button>
+            <% } %>
+
+                <% if(isMember) { %>
+                    <h1>click button to leave group</h1>
+                    <form action="" method="POST">
+                        <button>Leave Group</button>
+                    </form>
+                    <% } %>
+        </form>
 </body>
 
 </html>
