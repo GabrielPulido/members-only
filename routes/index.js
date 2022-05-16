@@ -4,13 +4,23 @@ const Message = require('../models/Message');
 var router = express.Router();
 const { validatePassword, generatePassword } = require('../utilities/password');
 const { body, validationResult } = require('express-validator');
+const passport = require('passport')
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
 
   const messagesArray = await Message.find({}).limit(20).exec();
 
-  res.render('index', { title: 'Members-Only', messages: messagesArray });
+  let isLoggedIn;
+  console.log(req.isAuthenticated())
+  if (req.isAuthenticated()) {
+    isLoggedIn = true;
+  }
+  else {
+    isLoggedIn = false;
+  }
+
+  res.render('index', { title: 'Members-Only', messages: messagesArray, isLoggedIn: isLoggedIn });
 });
 
 // Register
@@ -58,8 +68,18 @@ router.get('/login', function (req, res, next) {
   res.render('login');
 });
 
-router.post('/login', passport.authenticate(), function (req, res, next) {
-
+router.post('/login', passport.authenticate('local', { failureRedirect: '/login-failed', successRedirect: '/login-success' }), function (err, req, res, next) {
+  if (err) next(err)
 })
+
+//Login success/fail
+router.get('/login-failed', (req, res) => res.render('login-failed'));
+router.get('/login-success', (req, res) => res.render('login-success'));
+
+// Visiting this route logs the user out
+router.get('/logout', (req, res, next) => {
+  req.logout();
+  res.redirect('/');
+});
 
 module.exports = router;

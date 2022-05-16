@@ -30,7 +30,10 @@ a {
   font-size: 20px;
 }
 
+.messages-container {
+  display: flex;
+}
+
 .message {
-  /* height: 100px;
-  width: 100px; */
+  margin: 30px;
 }
