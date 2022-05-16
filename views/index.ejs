@@ -12,9 +12,14 @@
   <nav class="navbar">
     <h1>Members-Only</h1>
     <div class="homepage-links">
-      <a href="/login">Login</a>
-      <a href="/register">Sign Up</a>
-      <a href="/logout">Logout</a>
+      <% if(isLoggedIn) { %>
+        <a href="/join">Join</a>
+        <a href="/logout">Logout</a>
+        <% } %>
+          <% if(!isLoggedIn) { %>
+            <a href="/register">Sign Up</a>
+            <a href="/login">Login</a>
+            <% } %>
     </div>
   </nav>
   <div class="messages-container">
@@ -38,6 +43,10 @@
   <% if(isLoggedIn) { %>
     <h2>Logged In</h2>
     <% } %>
+      <% if(!isLoggedIn) { %>
+        <h2>Logged Out</h2>
+        <% } %>
+
 </body>
 
 </html>

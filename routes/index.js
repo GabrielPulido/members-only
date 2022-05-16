@@ -9,15 +9,16 @@ const passport = require('passport')
 /* GET home page. */
 router.get('/', async function (req, res, next) {
 
-  const messagesArray = await Message.find({}).limit(20).exec();
-
   let isLoggedIn;
+  let messagesArray = await Message.find({}).limit(20).exec();
+
   console.log(req.isAuthenticated())
   if (req.isAuthenticated()) {
     isLoggedIn = true;
   }
   else {
     isLoggedIn = false;
+    messagesArray.forEach(element => element.author = 'unknown');
   }
 
   res.render('index', { title: 'Members-Only', messages: messagesArray, isLoggedIn: isLoggedIn });
@@ -75,6 +76,7 @@ router.post('/login', passport.authenticate('local', { failureRedirect: '/login-
 //Login success/fail
 router.get('/login-failed', (req, res) => res.render('login-failed'));
 router.get('/login-success', (req, res) => res.render('login-success'));
+
 
 // Visiting this route logs the user out
 router.get('/logout', (req, res, next) => {
