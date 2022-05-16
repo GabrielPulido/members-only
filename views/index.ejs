@@ -40,6 +40,12 @@
         <p>
           <%= messages[i].content %>
         </p>
+        <% if(isAdmin) {%>
+          <form action="/delete-message" method="post">
+            <input type="hidden" name="messageid" value=<%=messages[i]._id %>>
+            <button>Delete Message</button>
+          </form>
+          <% }%>
       </div>
       <% } %>
   </div>

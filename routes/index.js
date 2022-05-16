@@ -18,7 +18,6 @@ router.get('/', async function (req, res, next) {
   }
   else {
     isLoggedIn = false;
-    messagesArray.forEach(element => element.author = 'unknown');
   }
 
   //see if user is a member
@@ -27,10 +26,18 @@ router.get('/', async function (req, res, next) {
     membershipButtonText = 'Leave'
   }
   else {
-    membershipButtonText = 'Join'
+    membershipButtonText = 'Join';
+    if (req.user !== undefined && req.user.admin === false) {
+      messagesArray.forEach(element => element.author = 'unknown');
+    }
   }
 
-  res.render('index', { title: 'Members-Only', messages: messagesArray, isLoggedIn: isLoggedIn, membershipButtonText: membershipButtonText });
+  let isAdmin = false;
+  if (req.user !== undefined && req.user.admin === true) {
+    isAdmin = true;
+  }
+
+  res.render('index', { title: 'Members-Only', messages: messagesArray, isLoggedIn: isLoggedIn, membershipButtonText: membershipButtonText, isAdmin: isAdmin });
 });
 
 // Register
@@ -53,6 +60,14 @@ router.post('/register',
       return res.status(400).json({ errors: errors.array() });
     }
 
+    let admin
+    if (typeof req.body.admin === undefined) {
+      admin = false;
+    }
+    else {
+      admin = true;
+    }
+
     const passwordObject = generatePassword(req.body.password);
     const salt = passwordObject.salt;
     const hash = passwordObject.hash;
@@ -64,7 +79,7 @@ router.post('/register',
       hash: hash,
       salt: salt,
       membershipStatus: false,
-      admin: false,
+      admin: admin,
     });
 
     await newUser.save();
@@ -102,7 +117,7 @@ router.get('/join', (req, res, next) => {
 router.post('/join', async (req, res, next) => {
 
   //Note this is could be exploited bc if they found a way to make 'secret-password' undefined, they could become a member when really they should only become a member when they enter the correct password
-  if (req.body['secret-password'] === undefined || req.body['secret-password'] === 'membersonly1') {
+  if (typeof req.body['secret-password'] === undefined || req.body['secret-password'] === 'membersonly1') {
     const updatedUser = new User({
       ...req.user,
       membershipStatus: !req.user.membershipStatus,
@@ -134,4 +149,16 @@ router.post('/newmessage', async (req, res, next) => {
   res.redirect('/');
 });
 
+router.post('/delete-message', async (req, res, next) => {
+  console.log(req.body.messageid);
+
+  if (req.user.admin === true) {
+    await Message.findByIdAndRemove(req.body.messageid).exec();
+    return res.redirect('/');
+  }
+  else {
+    return res.json('you are not an admin');
+  }
+  res.redirect('/')
+})
 module.exports = router;
