@@ -13,7 +13,6 @@ router.get('/', async function (req, res, next) {
   let messagesArray = await Message.find({}).limit(20).exec();
 
   //Determines if there's a logged in user
-  console.log(req.isAuthenticated())
   if (req.isAuthenticated()) {
     isLoggedIn = true;
   }
@@ -24,7 +23,7 @@ router.get('/', async function (req, res, next) {
 
   //see if user is a member
   let membershipButtonText;
-  if (req.user.membershipStatus === true) {
+  if (req.user !== undefined && req.user.membershipStatus === true) {
     membershipButtonText = 'Leave'
   }
   else {
@@ -113,6 +112,26 @@ router.post('/join', async (req, res, next) => {
     console.log('updated user')
   }
   return res.redirect('/');
+});
+
+
+//Create Message
+router.get('/newmessage', (req, res, next) => {
+  res.render('create-message');
+});
+
+router.post('/newmessage', async (req, res, next) => {
+  const newMessage = new Message(
+    {
+      title: req.body.title,
+      timestamp: new Date(),
+      content: req.body.content,
+      author: req.user.username,
+    }
+  );
+
+  await newMessage.save();
+  res.redirect('/');
 });
 
 module.exports = router;
