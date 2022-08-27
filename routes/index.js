@@ -27,7 +27,7 @@ router.get('/', async function (req, res, next) {
   }
   else {
     membershipButtonText = 'Join';
-    if (req.user !== undefined && req.user.admin === false) {
+    if (req.user === undefined || req.user.admin === false) {
       messagesArray.forEach(element => element.author = 'unknown');
     }
   }
@@ -61,7 +61,7 @@ router.post('/register',
     }
 
     let admin
-    if (typeof req.body.admin === undefined) {
+    if (typeof req.body.admin === 'undefined') {
       admin = false;
     }
     else {
